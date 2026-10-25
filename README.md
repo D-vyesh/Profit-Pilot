@@ -85,6 +85,8 @@ Then open **http://127.0.0.1:8000** — the script installs dependencies and bui
 
 ## ⚡ Quickstart
 
+> 📘 **All setup and run commands in one place: see [COMMANDS.md](COMMANDS.md).**
+
 1. **Clone the repo and set up the environment:**
    ```powershell
    git clone <repo-url>
