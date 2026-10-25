@@ -20,14 +20,16 @@ Build a reinforcement learning agent that learns a profitable portfolio-allocati
 3. **Custom Environment**: Feed arrays into a Gymnasium-style multi-asset trading environment with realistic constraints (fees, slippage, risk limits).
 4. **Agent Training**: Train a PPO (Proximal Policy Optimization) agent on the environment.
 5. **Evaluation**: Test on unseen data, compare to benchmarks, and analyze risk/return metrics.
-6. **Extensions**: Add original features (e.g., LSTM, risk overlays, new reward functions).
+6. **Dashboard**: Interactively backtest, engineer the reward function, and train agents from the browser.
+7. **Extensions**: Add original features (e.g., LSTM, risk overlays, new reward functions).
 
 ## 🧩 Key Features
 
 - Modular pipeline: data, features, environment, agent, evaluation
 - Multi-asset support (BTC, ETH, etc.)
 - Realistic trading constraints (fees, max drawdown, stop-loss, cooldown)
-- PPO baseline (easily extensible to LSTM, other RL algorithms)
+- PPO baseline + RecurrentPPO (LSTM) support
+- **Interactive dashboard** for backtesting, reward engineering, and training (see below)
 - Academic references and methodology included
 - Ready-to-run Colab and local Jupyter notebooks
 - Reproducible experiments and artifact tracking
@@ -50,6 +52,7 @@ See `reports/colab_5m_2024_2026/profit_pilot_ppo_5m_t4_test_metrics.json` for fu
 ## 📦 Directory Structure
 
 - `src/profit_pilot/` — Core package (data, env, features, train, utils)
+- `dashboard/` — Interactive web dashboard (FastAPI backend + React frontend)
 - `data/` — Raw and processed market data bundles
 - `models/` — Saved agent checkpoints and training summaries
 - `reports/` — Evaluation metrics, plots, and experiment artifacts
@@ -57,6 +60,28 @@ See `reports/colab_5m_2024_2026/profit_pilot_ppo_5m_t4_test_metrics.json` for fu
 - `docs/` — Methodology, setup guide, reference analysis, slides
 - `config/` — Project and experiment configuration files
 - `tests/` — Unit tests
+
+## 🖥️ Interactive Dashboard
+
+A built-in web UI (`dashboard/`) for exploring and experimenting with the trained agents — no code changes needed:
+
+- **Backtesting** — run any trained model on any dataset and reproduce the published results exactly
+- **Reward engineering** — switch between the two reward modes with live weight controls:
+  - *Simple*: `return − cost_penalty − risk_penalty`
+  - *Volatility-added*: `+ volatility_reward_weight · tanh(return / vol)`
+  - plus a per-term reward decomposition chart showing exactly which term drives performance
+- **Training from the UI** — choose PPO or RecurrentPPO (LSTM), fine-tune existing weights or train fresh, with a proper **train / validation / test** split workflow and side-by-side val/test results (catch overfitting before trusting a reward tweak)
+- **Full trade log** — every buy/sell with timestamp, price, fees, realized P&L, and reason (agent decision / stop-loss / position-cap / risk-halt)
+- **Charts** — equity vs equal-weight benchmark, BTC & ETH candlesticks with trade markers, allocation over time, cumulative reward, drawdown & volatility
+- **Run comparison** — every experiment kept in a sortable table (return, alpha, Sharpe, max drawdown, reward)
+
+Run it (after cloning):
+
+```bat
+dashboard\start.bat
+```
+
+Then open **http://127.0.0.1:8000** — the script installs dependencies and builds the frontend on first run. Details in `dashboard/README.md`.
 
 ## ⚡ Quickstart
 
@@ -74,6 +99,8 @@ See `reports/colab_5m_2024_2026/profit_pilot_ppo_5m_t4_test_metrics.json` for fu
 3. **Run a notebook:**
    - Open `notebooks/colab_t4_5m_profit_pilot_training.ipynb` or `notebooks/Local Run/Local_run_5m.ipynb` in Jupyter/Colab.
    - Follow the cells to train and evaluate the agent.
+4. **Or use the dashboard:**
+   - Run `dashboard\start.bat` and open http://127.0.0.1:8000 to backtest, tweak rewards, and train agents interactively.
 
 ## 🛠️ Main Modules
 
